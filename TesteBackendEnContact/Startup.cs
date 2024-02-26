@@ -1,6 +1,7 @@
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,13 +31,9 @@ namespace TesteBackendEnContact
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TesteBackendEnContact", Version = "v1" });
             });
-
-            services.AddFluentMigratorCore()
-                    .ConfigureRunner(rb => rb
-                        .AddSQLite()
-                        .WithGlobalConnectionString(Configuration.GetConnectionString("DefaultConnection"))
-                        .ScanIn(typeof(Startup).Assembly).For.Migrations())
-                    .AddLogging(lb => lb.AddFluentMigratorConsole());
+            
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<ContactDbContext>(options => options.UseSqlite(connectionString));
 
             services.AddSingleton(new DatabaseConfig { ConnectionString = Configuration.GetConnectionString("DefaultConnection") });
             services.AddScoped<IContactBookRepository, ContactBookRepository>();
