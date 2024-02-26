@@ -7,6 +7,7 @@ namespace TesteBackendEnContact.Core.Domain.ContactBook.Company
         public int Id { get; private set; }
         public int ContactBookId { get; private set; }
         public string Name { get; private set; }
+        public ContactBook ContactBook { get; set; }
 
         public Company(int id, int contactBookId, string name)
         {
